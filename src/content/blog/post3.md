@@ -1,57 +1,164 @@
 ---
-title: "Demo Post 3"
-description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-pubDate: "Sep 12 2022"
+title: "Debug mTLS using Wireshark"
+description: "This article will discuss how to use Wireshark to debug mTLS connections, capture traffic and analyze the TLS handshake process.<br>
+This can be useful for checking if the client doesn't send the correct certificate."
+pubDate: "May 16 2023"
 heroImage: "/post_img.webp"
-badge: "Demo badge"
-tags: ["rust","tokio"]
+badge: "Security"
+tags: ["SSL","Infrastructure"]
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Vitae ultricies leo integer
-malesuada nunc vel risus commodo viverra. Adipiscing enim eu turpis egestas
-pretium. Euismod elementum nisi quis eleifend quam adipiscing. In hac habitasse
-platea dictumst vestibulum. Sagittis purus sit amet volutpat. Netus et malesuada
-fames ac turpis egestas. Eget magna fermentum iaculis eu non diam phasellus
-vestibulum lorem. Varius sit amet mattis vulputate enim. Habitasse platea
-dictumst quisque sagittis. Integer quis auctor elit sed vulputate mi. Dictumst
-quisque sagittis purus sit amet.
+Transport Layer Security (TLS) is a widely used cryptographic protocol for securing communications over the internet. TLS provides encryption and authentication services that protect data in transit between client and server applications. Mutual Transport Layer Security (MTLS) is an extension of TLS that provides two-way authentication between client and server applications. In mTLS, both the client and server present their digital certificates to each other and verify each other's identity before establishing a secure communication channel.
 
-Morbi tristique senectus et netus. Id semper risus in hendrerit gravida rutrum
-quisque non tellus. Habitasse platea dictumst quisque sagittis purus sit amet.
-Tellus molestie nunc non blandit massa. Cursus vitae congue mauris rhoncus.
-Accumsan tortor posuere ac ut. Fringilla urna porttitor rhoncus dolor. Elit
-ullamcorper dignissim cras tincidunt lobortis. In cursus turpis massa tincidunt
-dui ut ornare lectus. Integer feugiat scelerisque varius morbi enim nunc.
-Bibendum neque egestas congue quisque egestas diam. Cras ornare arcu dui vivamus
-arcu felis bibendum. Dignissim suspendisse in est ante in nibh mauris. Sed
-tempus urna et pharetra pharetra massa massa ultricies mi.
+When working with mTLS connections, it is important to be able to debug the handshake process to identify and resolve issues with certificate validation, key exchange, and other cryptographic protocols. Wireshark is a powerful tool that can be used to capture, analyze, and debug network traffic, including TLS and mTLS connections.
 
-Mollis nunc sed id semper risus in. Convallis a cras semper auctor neque. Diam
-sit amet nisl suscipit. Lacus viverra vitae congue eu consequat ac felis donec.
-Egestas integer eget aliquet nibh praesent tristique magna sit amet. Eget magna
-fermentum iaculis eu non diam. In vitae turpis massa sed elementum. Tristique et
-egestas quis ipsum suspendisse ultrices. Eget lorem dolor sed viverra ipsum. Vel
-turpis nunc eget lorem dolor sed viverra. Posuere ac ut consequat semper viverra
-nam. Laoreet suspendisse interdum consectetur libero id faucibus. Diam phasellus
-vestibulum lorem sed risus ultricies tristique. Rhoncus dolor purus non enim
-praesent elementum facilisis. Ultrices tincidunt arcu non sodales neque. Tempus
-egestas sed sed risus pretium quam vulputate. Viverra suspendisse potenti nullam
-ac tortor vitae purus faucibus ornare. Fringilla urna porttitor rhoncus dolor
-purus non. Amet dictum sit amet justo donec enim.
+This article will discuss how to use Wireshark to debug mTLS connections, capture traffic and analyze the TLS handshake process.
+This can be useful for checking if the client doesn't send the correct certificate.
 
-Mattis ullamcorper velit sed ullamcorper morbi tincidunt. Tortor posuere ac ut
-consequat semper viverra. Tellus mauris a diam maecenas sed enim ut sem viverra.
-Venenatis urna cursus eget nunc scelerisque viverra mauris in. Arcu ac tortor
-dignissim convallis aenean et tortor at. Curabitur gravida arcu ac tortor
-dignissim convallis aenean et tortor. Egestas tellus rutrum tellus pellentesque
-eu. Fusce ut placerat orci nulla pellentesque dignissim enim sit amet. Ut enim
-blandit volutpat maecenas volutpat blandit aliquam etiam. Id donec ultrices
-tincidunt arcu. Id cursus metus aliquam eleifend mi.
+> After the handshake, in TLS 1.3, the packets are encrypted, so getting them in plain text is impossible. We will see this in more detail at the end of this article.
 
-Tempus quam pellentesque nec nam aliquam sem. Risus at ultrices mi tempus
-imperdiet. Id porta nibh venenatis cras sed felis eget velit. Ipsum a arcu
-cursus vitae. Facilisis magna etiam tempor orci eu lobortis elementum. Tincidunt
-dui ut ornare lectus sit. Quisque non tellus orci ac. Blandit libero volutpat
-sed cras. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin gravida.
-Egestas integer eget aliquet nibh praesent tristique magna.
+## Creating a Server with mTLS
+
+For our testing purposes, we create an elementary mTLS server in PHP.
+You can find the full source code here: https://github.com/marco-introini/mtls-example
+First, we must configure the Apache server to use our generated certificates. This can be done in the configuration file:
+
+```
+SSLEngine on  
+SSLCertificateFile /etc/apache2/ssl/ssl.crt
+SSLCertificateKeyFile /etc/apache2/ssl/ssl.key
+```
+
+Then, in the same configuration file, we accept the client certificate but do not force it:
+
+```
+SSLVerifyClient optional
+SSLVerifyDepth 1
+SSLOptions +StdEnvVars
+SSLCACertificateFile /etc/apache2/ssl/ssl.crt
+```
+
+It's crucial to add `SSLOptions +StdEnvVars` because we can check the certificate using Superglobals.
+
+The server PHP code is very simple: it checks if the client used an actual certificate and prints its Common Name
+
+```php
+if ($_SERVER['SSL_CLIENT_VERIFY'] != 'SUCCESS') {
+	die('SSL client verification failed');
+}
+  
+echo "Welcome ".$_SERVER["SSL_CLIENT_S_DN_CN"];
+```
+
+## Creating a Client with mTLS
+
+There is no need to create a client: we can simply use curl or OpenSSL
+
+With curl, we can use:
+
+```bash
+curl --location 'https://localhost/server.php' \
+--key "./certs/client_key.pem" \  
+-E "./certs/client_cert.pem" \  
+--cacert "./certs/ssl.crt"
+```
+
+In OpenSSL:
+
+```bash
+openssl s_client -connect localhost:443 -status -msg -key certs/client_key.pem -cert certs/client_cert.pem -CAfile certs/ssl.crt -state
+```
+
+Note that using OpenSSL we can check only the root of our server, not a single page like in curl.
+
+## Testing
+
+For having different IP for client and server machines I used a virtual machine with Kali Linux installed for the curl client and Wireshark and the macOS with docker desktop for the server.
+In the following example, the client IP is 192.168.64.6 and the server IP is 192.168.64.1
+
+Of course, we must copy all certificates inside the Kali Linux VM before using curl.
+Because the server certificate is generated using localhost as CN we must add the -k option too.
+
+#### Wireshark capture without client certificate
+
+Let's begin with a client call without a client certificate. Open Wireshark and in a terminal write
+
+```
+curl --tlsv1.2 --tls-max 1.2 \
+--location 'https://192.168.64.1/server.php' \
+--cacert "/media/shared/ssl.crt" -k
+```
+
+Obviously, the curl fails.
+```
+SSL client verification failed 
+```
+
+Let's see what happened.
+Firstly the client sent the Client Hello Message; the server response was a Server Hello, sending its own (server) certificate. Then the server sent another message requesting a client certificate (Certificate Request Message - Type 13):
+
+![Server Hello](./images/no_cert_1_server_hello.png)
+
+The client has not a certificate, so its response is without it, as you can see from the following capture
+
+![No certificate](./images/no_cert_2_client_cert.png)
+
+#### Wireshark capture with client certificate
+
+Now let's try it again, but using the correct client certificate
+
+```
+curl --tlsv1.2 --tls-max 1.2 \
+--location 'https://192.168.64.1/server.php' \
+--key "/media/shared/client_key.pem" \
+-E "/media/shared/client_cert.pem" \
+--cacert "/media/shared/ssl.crt" -k
+```
+
+Response now is
+
+```
+Welcome TestClient
+```
+
+Let's dig inside Wireshark.
+The Client Hello and Server Hello (including Certificate Request) is the same. But the client has sent the certificate this time, as it is evident that they possess one from this packet:
+
+![Client Cert](./images/yes_cert_1_client_cert.png)
+
+We can further analyze the certificate used:
+
+![Client Cert Details](./images/yes_cert_2_client_cert_details.png)
+
+#### The problem with TLS 1.3
+
+We have seen the mTLS connection forcing the TLS version to 1.2. We did it because debugging a TLS 1.3 connection is way more challenging because everything after the Server Hello is encrypted.
+
+Let's demonstrate it.
+We can force the TLS 1.3 in the same curl call.
+```
+curl --tlsv1.3 --tls-max 1.3 \
+--location 'https://192.168.64.1/server.php' \
+--key "/media/shared/client_key.pem" \
+-E "/media/shared/client_cert.pem" \
+--cacert "/media/shared/ssl.crt" -k
+Welcome TestClient   
+```
+
+Let's see what Wireshark can see:
+
+![TLS 1.3](./images/yes_cert_tls1_3.png)
+
+In this packet, there is the Client Certificate request, as we saw in the 1.2 example, but this time the whole data are encrypted and unavailable to Wireshark.
+
+## Conclusions
+
+In conclusion, Transport Layer Security (TLS) and Mutual Transport Layer Security (mTLS) play crucial roles in securing communications over the Internet. Wireshark is a valuable tool for debugging mTLS connections, capturing network traffic, and analyzing the TLS handshake process. By using Wireshark, developers can identify and resolve issues related to certificate validation, key exchange, and other cryptographic protocols.
+
+When establishing an mTLS connection, both the client and server exchange digital certificates to verify each other's identity, ensuring a secure communication channel. Wireshark allows us to observe the handshake process, providing insights into the exchange of certificates and other relevant information.
+
+Through practical examples, this article demonstrated how to create an mTLS server and client using PHP, curl, and OpenSSL. Wireshark was then used to capture and analyze the network traffic between the server and the client. By examining the captured packets, we could observe the differences in behavior when a client certificate was present or absent.
+
+It is important to note that debugging TLS 1.3 connections can be more challenging due to encryption. In TLS 1.3, after the Server Hello, the packets become encrypted, making it impossible for Wireshark to access the plaintext data. However, Wireshark can still provide valuable insights into the handshake process and the initial stages of communication.
+
+Overall, Wireshark is a powerful tool for troubleshooting mTLS connections and gaining a deeper understanding of the TLS handshake. It allows developers to diagnose and resolve issues related to certificate verification and other aspects of secure communication, ultimately enhancing the security and reliability of Internet-based applications.
