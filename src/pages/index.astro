@@ -6,13 +6,15 @@ import {getCollection} from "astro:content";
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const last_posts = posts.slice(0, 3);
+
+import img_tester from "../images/tester.jpg"
+import img_api_call from "../images/api-call.jpg"
+import img_cli2 from "../images/cli2.jpg"
+import img_cli from "../images/cli.jpg"
 ---
 
 <BaseLayout sideBarActiveItemID="home">
-    <div class="hero">
-        Prova
-    </div>
-    <div class="pb-12 mt-5">
+    <div class="pb-12 mt-5 w-full">
         <div class="text-xl py-1">Hey there 👋</div>
         <div class="text-5xl font-bold">Marco Introini</div>
         <div class="text-3xl py-3 font-bold">Software Engineer</div>
@@ -34,25 +36,34 @@ const last_posts = posts.slice(0, 3);
     </div>
 
     <HorizontalCard
-            title="Demo Project 1"
-            img="/post_img.webp"
-            desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            url="#"
-            badge="NEW"
+            title="Layer7 API Gateway Console"
+            img={img_api_call}
+            desc="A OSS Console for Layer7 API Gateways. In early stage of development"
+            url="https://github.com/marco-introini/layer7-console"
+            badge="FOSS"
     />
     <div class="divider my-0"></div>
     <HorizontalCard
-            title="Demo Project 2"
-            img="/post_img.webp"
-            desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            url="#"
+            title="CertInfo CLI"
+            img={img_cli2}
+            desc="SSL Certificate check in the command line using Laravel Zero Framework."
+            url="https://github.com/marco-introini/certinfo-cli"
+            badge="FOSS"
     />
     <div class="divider my-0"></div>
     <HorizontalCard
-            title="Demo Project 3"
-            img="/post_img.webp"
-            desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-            url="#"
+            title="ShortUrl"
+            img={img_tester}
+            desc="Self hosting Open Source application for shortening url with API and administration panel. In Laravel 10 and Filament 3."
+            url="https://github.com/marco-introini/short-url"
+            badge="FOSS"
+    />
+
+    <HorizontalCard
+            title="Url tester"
+            img={img_cli2}
+            desc="An url tester application written in PHP/Laravel and FilamentPHP."
+            url="https://github.com/marco-introini/urltester"
             badge="FOSS"
     />
 

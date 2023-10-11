@@ -15,7 +15,7 @@ import { Image } from "astro:assets";
 <BaseLayout title={title} description={description} image={heroImage}>
   <main class="md:flex md:justify-center w-full">
     <article class="prose prose-lg w-full max-w-[1600px] prose-img:mx-auto">
-      {heroImage && <Image width={750} height={422} format="webp" src={heroImage} alt={title} class="w-full mb-6 max-h-96 object-cover" />}
+      {heroImage && <Image width={1600} height={422} format="webp" src={heroImage} alt={title} class="w-full mb-6 max-h-96 object-cover" />}
       <h1 class="title my-2 text-4xl font-bold">{title}</h1>
       {pubDate && <time>{displayDate}</time>}
       <br />
@@ -37,7 +37,9 @@ import { Image } from "astro:assets";
         )
       }
       <div class="divider my-2"></div>
-      <slot />
+      <div class="mx-4 flex flex-col">
+        <slot />
+      </div>
     </article>
   </main>
 </BaseLayout>

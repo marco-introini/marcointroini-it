@@ -3,10 +3,18 @@ title: "Debug mTLS using Wireshark"
 description: "This article will discuss how to use Wireshark to debug mTLS connections, capture traffic and analyze the TLS handshake process.<br>
 This can be useful for checking if the client doesn't send the correct certificate."
 pubDate: "May 16 2023"
-heroImage: "/post_img.webp"
+heroImage: "/images/cli.jpg"
 badge: "Security"
 tags: ["SSL","Infrastructure"]
 ---
+
+import { Image } from 'astro:assets';
+
+import img_hello from './images/no_cert_1_server_hello.png';
+import img_nocert from './images/no_cert_2_client_cert.png';
+import img_clientcert from './images/yes_cert_1_client_cert.png';
+import img_clientcert_details from './images/yes_cert_2_client_cert_details.png';
+import img_tls13 from './images/yes_cert_tls1_3.png';
 
 Transport Layer Security (TLS) is a widely used cryptographic protocol for securing communications over the internet. TLS provides encryption and authentication services that protect data in transit between client and server applications. Mutual Transport Layer Security (MTLS) is an extension of TLS that provides two-way authentication between client and server applications. In mTLS, both the client and server present their digital certificates to each other and verify each other's identity before establishing a secure communication channel.
 
@@ -97,11 +105,11 @@ SSL client verification failed
 Let's see what happened.
 Firstly the client sent the Client Hello Message; the server response was a Server Hello, sending its own (server) certificate. Then the server sent another message requesting a client certificate (Certificate Request Message - Type 13):
 
-![Server Hello](./images/no_cert_1_server_hello.png)
+<Image src={img_hello} alt="Server Hello" class="w-full max-w-max" />
 
 The client has not a certificate, so its response is without it, as you can see from the following capture
 
-![No certificate](./images/no_cert_2_client_cert.png)
+<Image src={img_nocert} alt="No certificate used" class="w-full max-w-max" />
 
 #### Wireshark capture with client certificate
 
@@ -124,11 +132,11 @@ Welcome TestClient
 Let's dig inside Wireshark.
 The Client Hello and Server Hello (including Certificate Request) is the same. But the client has sent the certificate this time, as it is evident that they possess one from this packet:
 
-![Client Cert](./images/yes_cert_1_client_cert.png)
+<Image src={img_clientcert} alt="Client Certificate" class="w-full max-w-max" />
 
 We can further analyze the certificate used:
 
-![Client Cert Details](./images/yes_cert_2_client_cert_details.png)
+<Image src={img_clientcert_details} alt="Client Certificate Details" class="w-full max-w-max" />
 
 #### The problem with TLS 1.3
 
@@ -147,7 +155,7 @@ Welcome TestClient
 
 Let's see what Wireshark can see:
 
-![TLS 1.3](./images/yes_cert_tls1_3.png)
+<Image src={img_tls13} alt="TLS 1.3" class="w-full max-w-max" />
 
 In this packet, there is the Client Certificate request, as we saw in the 1.2 example, but this time the whole data are encrypted and unavailable to Wireshark.
 
