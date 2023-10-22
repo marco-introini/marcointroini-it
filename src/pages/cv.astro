@@ -4,112 +4,132 @@ import TimeLineElement from "../components/cv/TimeLine.astro";
 ---
 
 <BaseLayout title="Resume" sideBarActiveItemID="cv">
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Profile</div>
-  </div>
+    <div class="mb-5">
+        <div class="text-3xl w-full font-bold">Profile</div>
+    </div>
 
-  <div class="mb-10 text-justify">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-    aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
-    aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-    cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-  </div>
+    <div class="mb-10 text-justify">
+        I am a back-end developer, specialized mainly in APIs. I love using PHP/Laravel with TALL stack (Tailwind,
+        AlpineJS, Laravel and Livewire), Kotlin and Go. I have strong knowledge of Service Oriented Architecture,
+        Enterprise Service Bus, API gateway (CA) and XML firewall (Forum Sentry) appliance. During the last few years
+        our team used Agile development methods.<br><br>
+        My favorite languages are PHP/Laravel, Kotlin and Go, but I have good knowledge of Java, Javascript, BPEL,
+        Python, C and C++.<br><br>
+        I’m now the administrator of CA API Gateways and security Engineer at Banca Popolare di Sondrio.
+    </div>
 
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Education</div>
-  </div>
+    <div class="mb-5">
+        <div class="text-3xl w-full font-bold">Education</div>
+    </div>
 
-  <div class="time-line-container grid gap-4 mb-10">
-    <TimeLineElement
-      title="Title Name"
-      subtitle="[start year] to [end year] at [Study Center Name], [City], [Country]"
-    />
-    <TimeLineElement
-      title="Title Name"
-      subtitle="[start year] to [end year] at [Study Center Name], [City], [Country]"
-    />
-  </div>
+    <div class="time-line-container grid gap-4 mb-10">
+        <TimeLineElement
+                title="Università degli Studi di Milano - 2002"
+                subtitle="Computer Science Academic Degree"
+        />
+        <TimeLineElement
+                title="Liceo Scientifico Carlo Donegani, Sondrio"
+        />
+    </div>
 
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Experience</div>
-  </div>
+    <div class="mb-5">
+        <div class="text-3xl w-full font-bold">Experience</div>
+    </div>
 
-  <div class="time-line-container mb-10">
-    <TimeLineElement
-      title="Job Title at Project or Company Name"
-      subtitle="From [Start Date] to [End Date] at [Company], [City], [Country]"
-    >
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-    </TimeLineElement>
-    <TimeLineElement
-      title="Job Title at Project or Company Name"
-      subtitle="From [Start Date] to [End Date] at [Company], [City], [Country]"
-    >
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-    </TimeLineElement>
-    <TimeLineElement
-      title="Job Title at Project or Company Name"
-      subtitle="From [Start Date] to [End Date] at [Company], [City], [Country]"
-    >
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
-    </TimeLineElement>
-  </div>
+    <div class="time-line-container mb-10">
+        <TimeLineElement
+                title="API Engineer and API Gateway administrator at Banca Popolare di Sondrio"
+                subtitle="From 2022"
+        >
+            API and microservices design and integration on complex banking systems. Cyber security engineer of incoming API calls.
+        </TimeLineElement>
 
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Certifications</div>
-  </div>
+        <TimeLineElement
+                title="Network and SOA Technical Engineer at Banca Popolare di Sondrio"
+                subtitle="From 2017 to 2022"
+        >
+            SOAP services integration and security management. Enterprise Service Bus administrator and developer (BPEL and Java).
+        </TimeLineElement>
 
-  <ul class="list-disc mx-6 mb-10 grid gap-2">
-    <li>
-      <a href="#" target="_blank"> Certification Name (with link)</a>
-    </li>
-    <li>
-      <a href="#" target="_blank"> Certification Name (with link)</a>
-    </li>
-  </ul>
+        <TimeLineElement
+                title="Enterprise Service Bus Technical Engineer at Banca Popolare di Sondrio"
+                subtitle="From 2009 to 2017"
+        >
+            IBM Websphere Business Process Server and XML Firewall (Forum Sentry Gateway) administrator
+        </TimeLineElement>
 
-  <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Skills</div>
-  </div>
+        <TimeLineElement
+                title="PHP and JAVA Web Service developer at Banca Popolare di Sondrio"
+                subtitle="From 2005 to 2009"
+        >
+            Web services developer in PHP and JAVA
+        </TimeLineElement>
 
-  <div class="my-3">
-    <h1 class="text-xl font-semibold mb-3">Programming Languages and Frameworks</h1>
-    <ul class="list-disc md:columns-5 columns-2 mx-6">
-      <li>Laravel</li>
-      <li>PHP</li>
-      <li>Rust</li>
-      <li>Javascript</li>
-      <li>Kotlin</li>
-      <li>Go</li>
-      <li>Java</li>
-      <li>Spring</li>
-      <li>C++</li>
-      <li>React</li>
-      <li>AlpineJS</li>
+        <TimeLineElement
+                title="PHP web developer at Banca Popolare di Sondrio"
+                subtitle="From 2000 to 2005"
+        >
+            Web applications in PHP
+        </TimeLineElement>
+
+    </div>
+
+    <div class="mb-5">
+        <div class="text-3xl w-full font-bold">Certifications</div>
+    </div>
+
+    <ul class="list-disc mx-6 mb-10 grid gap-2">
+        <li>
+            <a href="#" target="_blank"> Certification Name (with link)</a>
+        </li>
+        <li>
+            <a href="#" target="_blank"> Certification Name (with link)</a>
+        </li>
     </ul>
-  </div>
 
-  <div class="my-3">
-    <h1 class="text-xl font-semibold mb-3">API</h1>
-    <ul class="list-disc md:columns-5 columns-2 mx-6">
-      <li>REST</li>
-      <li>Soap</li>
-      <li>GraphQL</li>
-      <li>gRPC</li>
-      <li>API Gateway Management</li>
-      <li>Broadcom Layer7 API Gateway</li>
-    </ul>
-  </div>
+    <div class="mb-5">
+        <div class="text-3xl w-full font-bold">Skills</div>
+    </div>
 
-  <div class="my-3">
-    <h1 class="text-xl font-semibold mb-3">Other Skills</h1>
-    <ul class="list-disc md:columns-5 columns-2 mx-6">
-      <li>Linux Administration</li>
-      <li>Docker</li>
-      <li>MySql</li>
-      <li>Oracle</li>
-      <li>MongoDB</li>
-    </ul>
-  </div>
+    <div class="my-3">
+        <h1 class="text-xl font-semibold mb-3">Programming Languages and Frameworks</h1>
+        <ul class="list-disc md:columns-5 columns-2 mx-6">
+            <li>Laravel</li>
+            <li>PHP</li>
+            <li>Kotlin</li>
+            <li>Rust</li>
+            <li>Go</li>
+            <li>Javascript</li>
+            <li>AlpineJS</li>
+            <li>Java</li>
+            <li>Spring</li>
+            <li>C++</li>
+            <li>React</li>
+            <li>ARM64 Assembly</li>
+        </ul>
+    </div>
+
+    <div class="my-3">
+        <h1 class="text-xl font-semibold mb-3">API</h1>
+        <ul class="list-disc md:columns-5 columns-2 mx-6">
+            <li>REST</li>
+            <li>Soap</li>
+            <li>GraphQL</li>
+            <li>gRPC</li>
+            <li>API Gateway Management</li>
+            <li>Broadcom Layer7 API Gateway</li>
+        </ul>
+    </div>
+
+    <div class="my-3">
+        <h1 class="text-xl font-semibold mb-3">Other Skills</h1>
+        <ul class="list-disc md:columns-5 columns-2 mx-6">
+            <li>Linux Administration</li>
+            <li>Docker</li>
+            <li>MySql</li>
+            <li>Oracle</li>
+            <li>MongoDB</li>
+        </ul>
+    </div>
 
 </BaseLayout>
